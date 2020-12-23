@@ -179,7 +179,7 @@ public class ZipRange implements Comparable<ZipRange> {
      *  group 1: 32222
      *  group 2: 53333
      */
-    private static final Pattern ARGS_PATTERN = Pattern.compile("\\[(\\d{5}),(\\d{5})\\]");
+    private static final Pattern ARGS_PATTERN = Pattern.compile("\\[\\s*(\\d{5})\\s*,\\s*(\\d{5})\\s*\\]");
 
     public static void main(String[] args) {
         System.out.println(printRanges(

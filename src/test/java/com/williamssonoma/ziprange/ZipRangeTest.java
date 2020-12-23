@@ -24,7 +24,10 @@ public class ZipRangeTest {
         ZipCode low = ZipCode.valueOf("00123");
         ZipCode high = ZipCode.valueOf("01230");
 
-        new ZipRange(low, high);
+        ZipRange lowToHigh = new ZipRange(low, high);
+        ZipRange highToLow = new ZipRange(high, low);
+
+        Assert.assertEquals(lowToHigh, highToLow);
     }
 
     @Test
@@ -263,7 +266,7 @@ public class ZipRangeTest {
         List<ZipRange> expectedRanges = Arrays.asList(a, b, c, d, e);
 
         String[] args = {
-                "[00000,99999]",
+                "[00000,99999] \t\n[ 00001 , 99998 ]",
                 "[0, 2]",// bad range, should be ignored
                 TEST_RESOURCES_PATH + "/input.txt" };
 
