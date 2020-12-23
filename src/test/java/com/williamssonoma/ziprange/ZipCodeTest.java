@@ -1,37 +1,57 @@
 package com.williamssonoma.ziprange;
 
+import java.math.BigDecimal;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 public class ZipCodeTest {
     @Test(expected = IllegalArgumentException.class)
-    public void testValueOfBad0() {
+    public void testValueOf0() {
         ZipCode.valueOf("zippy-dee-doo-dah");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testValueOfBad1() {
+    public void testValueOf1() {
         ZipCode.valueOf("-1");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testValueOfBad2() {
+    public void testValueOf2() {
         ZipCode.valueOf("0");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testValueOfBad3() {
+    public void testValueOf3() {
         ZipCode.valueOf("000001");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testValueOfBad4() {
+    public void testValueOf4() {
         ZipCode.valueOf("9900000");
     }
 
-    public void testValueOfGood() {
+    public void testValueOf5() {
         ZipCode.valueOf("00000");
         ZipCode.valueOf("99999");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testValueOf6() {
+        ZipCode.valueOf(-1);
+    }
+
+    public void testValueOf7() {
+        ZipCode.valueOf(0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testValueOf8() {
+        ZipCode.valueOf(9900000);
+    }
+
+    public void testValueOf9() {
+        ZipCode.valueOf(99999);
     }
 
     @Test
@@ -70,5 +90,42 @@ public class ZipCodeTest {
     public void testMax() {
         ZipCode a = ZipCode.valueOf("99999");
         Assert.assertEquals(a, a.max(ZipCode.valueOf("99998")));
+    }
+
+    @Test
+    public void testEquals0() {
+        ZipCode a = ZipCode.valueOf("00001");
+
+        Assert.assertTrue(a.equals(a));
+    }
+
+    @Test
+    public void testEquals1() {
+        ZipCode a = ZipCode.valueOf("00001");
+
+        Assert.assertFalse(a.equals(null));
+    }
+
+    @Test
+    public void testEquals2() {
+        ZipCode a = ZipCode.valueOf("00001");
+
+        Assert.assertFalse(a.equals(BigDecimal.ONE));
+    }
+
+    @Test
+    public void testEquals3() {
+        ZipCode a = ZipCode.valueOf("00001");
+        ZipCode b = ZipCode.valueOf("00001");
+
+        Assert.assertTrue(a.equals(b));
+    }
+
+    @Test
+    public void testEquals4() {
+        ZipCode a = ZipCode.valueOf("00001");
+        ZipCode b = ZipCode.valueOf("00010");
+
+        Assert.assertFalse(a.equals(b));
     }
 }

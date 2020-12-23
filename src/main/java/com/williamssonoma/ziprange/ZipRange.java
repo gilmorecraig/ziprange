@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -125,6 +126,10 @@ public class ZipRange implements Comparable<ZipRange> {
             consolidated.add(merged);
         }
 
+        if (LOG.isDebugEnabled()) {
+            LOG.info("Consolidated ranges:\n" + printRanges(consolidated));
+        }
+
         return consolidated;
     }
 
@@ -177,19 +182,38 @@ public class ZipRange implements Comparable<ZipRange> {
     private static final Pattern ARGS_PATTERN = Pattern.compile("\\[(\\d{5}),(\\d{5})\\]");
 
     public static void main(String[] args) {
+        System.out.println(printRanges(
+                ZipRange.consolidate(parseRanges(args))));
+    }
 
-            List<ZipRange> ranges = Stream.of(args)
-                    .flatMap(ZipRange::parsePairs)
-                    .map(ZipRange::parseRange)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
+    /**
+     * Parse zip code ranges from main argument.
+     *
+     * @param args Main arguments
+     * @return Parsed zip code ranges
+     */
+    protected static List<ZipRange> parseRanges(String[] args) {
+        List<ZipRange> ranges = Stream.of(args)
+                .flatMap(ZipRange::parsePairs)
+                .map(ZipRange::parseRange)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
-            // print as a space delimited list
-            LOG.info("INPUT:\n" + ranges.stream().map(Object::toString).collect(Collectors.joining(" ")));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Parsed ranges:\n" + printRanges(ranges));
+        }
 
-            Set<ZipRange> consolidated = ZipRange.consolidate(ranges);
+        return ranges;
+    }
 
-            LOG.info("OUTPUT:\n" + consolidated.stream().map(Object::toString).collect(Collectors.joining(" ")));
+    /**
+     * Print zip code ranges as a space delimited list.
+     *
+     * @param ranges Zip code ranges
+     * @return Space delimited list of zip code ranges
+     */
+    private static String printRanges(Collection<ZipRange> ranges) {
+        return ranges.stream().map(Object::toString).collect(Collectors.joining(" "));
     }
 
     /**
@@ -235,22 +259,17 @@ public class ZipRange implements Comparable<ZipRange> {
         Matcher matcher = ARGS_PATTERN.matcher(pair);
 
         if (matcher.find()) {
-            try {
-                ZipCode a = ZipCode.valueOf(matcher.group(1));
-                ZipCode b = ZipCode.valueOf(matcher.group(2));
+            ZipCode a = ZipCode.valueOf(matcher.group(1));
+            ZipCode b = ZipCode.valueOf(matcher.group(2));
 
-                LOG.debug("parsed zip code: " + a);
-                LOG.debug("parsed zip code: " + b);
+            LOG.debug("parsed zip code: " + a);
+            LOG.debug("parsed zip code: " + b);
 
-                ZipRange range = new ZipRange(a, b);
+            ZipRange range = new ZipRange(a, b);
 
-                LOG.debug("parsed zip code range: " + range);
+            LOG.debug("parsed zip code range: " + range);
 
-                return range;
-            }
-            catch (IllegalArgumentException e) {
-                LOG.error(e.getMessage());
-            }
+            return range;
         }
         else {
             LOG.warn("Unable to parse zip code range \"" + pair + "\"; Ignoring");

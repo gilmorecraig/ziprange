@@ -51,7 +51,7 @@ public class ZipCode implements Comparable<ZipCode> {
      * @return Zip code
      * @throws IllegalArgumentException If code value is less than {@link #MIN} or greater than {@link #MAX}
      */
-    private static ZipCode valueOf(int code) {
+    public static ZipCode valueOf(int code) {
         if (code < MIN.code || code > MAX.code) {
             throw new IllegalArgumentException(
                     "Zip code must be between " + MIN.code + " and . Unable to parse \"" + code + "\"");
